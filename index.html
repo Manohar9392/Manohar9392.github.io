@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My GitHub Repositories</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #24292f;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 2rem auto;
+        }
+        .repo-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            transition: transform 0.2s;
+        }
+        .repo-card:hover {
+            transform: translateY(-6px);
+        }
+        .repo-card a {
+            font-size: 1.3rem;
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .repo-card p {
+            margin: 0.5rem 0;
+        }
+        .repo-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My GitHub Projects</h1>
+    </header>
+    <div class="container" id="repos"></div>
+
+    <script>
+        async function fetchRepos() {
+            const username = "Manohar9392";
+            const url = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
+            const response = await fetch(url);
+            const repos = await response.json();
+
+            let container = document.getElementById("repos");
+            repos.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+
+            repos.forEach(repo => {
+                let card = document.createElement("div");
+                card.className = "repo-card";
+                card.innerHTML = `
+                    <a href="${repo.html_url}" target="_blank">${repo.name}</a>
+                    <p class="repo-info">Updated: ${new Date(repo.updated_at).toLocaleDateString()}</p>
+                    <p class="repo-info">⭐ Stars: ${repo.stargazers_count} | 🍴 Forks: ${repo.forks_count}</p>
+                    <p>${repo.description || ""}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        fetchRepos();
+    </script>
+</body>
+</html>
